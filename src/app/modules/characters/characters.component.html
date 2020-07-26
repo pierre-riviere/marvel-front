@@ -1,0 +1,14 @@
+<div *ngIf="pagination.total">
+  <div *ngFor="let char of characters">
+    <img [src]="char.picture" style="width: 100px; height: 100px;" />
+    <div>{{ char.name }}</div>
+  </div>
+  <ngb-pagination
+    [collectionSize]="pagination.total"
+    [(page)]="pagination.page"
+    [maxSize]="pagination.maxSize"
+    [rotate]="true"
+    [boundaryLinks]="true"
+    (pageChange)="changePage($event)"
+  ></ngb-pagination>
+</div>
