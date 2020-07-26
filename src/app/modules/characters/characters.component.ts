@@ -24,6 +24,8 @@ export class CharactersComponent implements OnInit {
     maxSize: 3,
   };
 
+  public loading: boolean = false;
+
   ngOnInit() {
     this.initPage();
   }
@@ -37,6 +39,7 @@ export class CharactersComponent implements OnInit {
   }
 
   private searchCharacters(page: number = 1) {
+    this.loading = true;
     this.option.offset = (page - 1) * this.pagination.limit;
     this.marvelApiService.getCharacters(this.option).subscribe((data) => {
       if (!Array.isArray(data.characters)) {
@@ -56,12 +59,13 @@ export class CharactersComponent implements OnInit {
 
       this.characters = data.characters.map((char: any) => {
         const { path, extension } = char.thumbnail || { path: null, extension: null };
-
         return {
           name: char.name,
           picture: extension && path ? `${path}.${extension}` : null,
         };
       });
+
+      this.loading = false;
     });
   }
 }
