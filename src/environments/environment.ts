@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  marvelBackApiUrl: 'http://localhost:3000/api',
 };
 
 /*
