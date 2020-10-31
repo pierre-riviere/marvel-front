@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 import { Character, IOption, Pagination } from '../../models/marvel.interface';
 import { MarvelApiService } from '../../services/marvel-api.service';
 
@@ -41,31 +42,38 @@ export class CharactersComponent implements OnInit {
   private searchCharacters(page: number = 1) {
     this.loading = true;
     this.option.offset = (page - 1) * this.pagination.limit;
-    this.marvelApiService.getCharacters(this.option).subscribe((data) => {
-      if (!Array.isArray(data.characters)) {
-        this.characters = [];
-        return;
-      }
+    this.marvelApiService.getCharacters(this.option).subscribe(
+      (data) => {
+        if (!Array.isArray(data.characters)) {
+          this.characters = [];
+          return;
+        }
 
-      // set pagination
-      this.pagination = {
-        ...this.pagination,
-        ...{
-          limit: data.limit,
-          total: data.total,
-          count: data.count,
-        },
-      };
-
-      this.characters = data.characters.map((char: any) => {
-        const { path, extension } = char.thumbnail || { path: null, extension: null };
-        return {
-          name: char.name,
-          picture: extension && path ? `${path}.${extension}` : null,
+        // set pagination
+        this.pagination = {
+          ...this.pagination,
+          ...{
+            limit: data.limit,
+            total: data.total,
+            count: data.count,
+          },
         };
-      });
 
-      this.loading = false;
-    });
+        this.characters = data.characters.map((char: any) => {
+          const { path, extension } = char.thumbnail || { path: null, extension: null };
+          return {
+            name: char.name,
+            picture: extension && path ? `${path}.${extension}` : null,
+          };
+        });
+
+        this.loading = false;
+      },
+      (error) => {
+        this.loading = false;
+        console.log(error);
+        Swal.fire({ icon: 'warning', text: 'Une erreur est survenue. Veuillez réessayer ultérieurement...' });
+      }
+    );
   }
 }
