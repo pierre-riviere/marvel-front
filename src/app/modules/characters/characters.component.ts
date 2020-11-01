@@ -39,6 +39,25 @@ export class CharactersComponent implements OnInit {
     this.searchCharacters(page);
   }
 
+  public onSearchNameChange(value: string) {
+    this.option.nameStartsWith = value.trim();
+    this.searchCharacters();
+  }
+
+  public onSearchReset() {
+    this.onSearchNameChange('');
+  }
+
+  public submitFormSearch(): boolean {
+    this.searchCharacters();
+    return false;
+  }
+
+  public displayResult(): string {
+    const totalChars = !this.pagination ? 0 : this.pagination.total;
+    return `Found ${totalChars} ` + (totalChars > 1 ? 'characters' : 'character');
+  }
+
   private searchCharacters(page: number = 1) {
     this.loading = true;
     this.option.offset = (page - 1) * this.pagination.limit;

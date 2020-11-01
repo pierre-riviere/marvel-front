@@ -2,3 +2,19 @@
   margin-top: 50px;
   margin-bottom: 50px;
 }
+
+.character-form {
+  margin-top: 10px;
+}
+
+.character-card {
+  overflow: hidden;
+}
+
+.character-card img {
+  transition: transform 0.5s;
+}
+
+.character-card:hover img {
+  transform: scale(1.1);
+}
