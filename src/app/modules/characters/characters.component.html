@@ -7,12 +7,14 @@
   </div>
 
   <div *ngIf="pagination.total && !loading">
-    <div class="mb-3" *ngFor="let char of characters">
-      <div class="row">
-        <img class="img-thumbnail mx-auto" [src]="char.picture" />
-      </div>
-      <div class="row text-center">
-        <h2 class="col">{{ char.name }}</h2>
+    <div class="row">
+      <div *ngFor="let char of characters" class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-3">
+        <div class="card">
+          <img class="card-img-top" [src]="char.picture" alt="{{ char.name }}" />
+          <div class="card-body">
+            <h5 class="card-title">{{ char.name }}</h5>
+          </div>
+        </div>
       </div>
     </div>
   </div>
