@@ -1,4 +1,21 @@
 <div class="container">
+  <form class="character-form" (submit)="submitFormSearch()">
+    <div class="form-group">
+      <div class="input-group">
+        <input
+          class="form-control"
+          type="text"
+          (input)="onSearchNameChange($event.target.value)"
+          placeholder="search by name"
+        />
+        <button type="reset" (click)="onSearchReset()">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <button type="submit" style="display: none">Submit</button>
+    </div>
+  </form>
+
   <div class="text-center loader" *ngIf="loading">
     <div class="spinner-border" role="status">
       <span class="sr-only">Loading...</span>
@@ -6,18 +23,23 @@
     <div>Veuillez patienter...</div>
   </div>
 
-  <div *ngIf="pagination.total && !loading">
-    <div class="mb-3" *ngFor="let char of characters">
-      <div class="row">
-        <img class="img-thumbnail mx-auto" [src]="char.picture" />
-      </div>
-      <div class="row text-center">
-        <h2 class="col">{{ char.name }}</h2>
+  <div *ngIf="!loading">
+    <div class="row text-center">
+      <div class="col">{{ displayResult() }}</div>
+    </div>
+    <div class="row">
+      <div *ngFor="let char of characters" class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-3">
+        <div class="card character-card">
+          <img class="card-img-top" [src]="char.picture" alt="{{ char.name }}" />
+          <div class="card-body">
+            <h5 class="card-title">{{ char.name }}</h5>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="d-flex justify-content-center">
+  <div class="d-flex justify-content-center" *ngIf="pagination.total">
     <ngb-pagination
       [collectionSize]="pagination.total"
       [(page)]="pagination.page"

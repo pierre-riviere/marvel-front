@@ -18,15 +18,11 @@ export class MarvelApiService {
    * @returns {Observable<*>}
    */
   public getCharacters(option: IOption): Observable<any> {
-    const params = Object.keys(option)
-      .reduce((memo, param) => {
-        if (typeof option[param] === 'number') {
-          memo.push(`${param}=${option[param]}`);
-        }
-        return memo;
-      }, [])
-      .join('&');
-    return this.http.get(`${API_URL}/characters/list?${params}`).pipe(
+    const params = Object.keys(option).reduce((memo, param) => {
+      memo[param] = option[param];
+      return memo;
+    }, {});
+    return this.http.get(`${API_URL}/characters/list`, { params }).pipe(
       map((res: any) => {
         return res.data || res.code;
       })

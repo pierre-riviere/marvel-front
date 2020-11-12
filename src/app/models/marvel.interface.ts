@@ -1,6 +1,7 @@
 export interface IOption {
   readonly limit: number;
   offset: number;
+  nameStartsWith?: string;
 }
 
 export interface Pagination {
