@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Character, IOption, Pagination } from '../../models/marvel.interface';
 import { MarvelApiService } from '../../services/marvel-api.service';
@@ -21,11 +22,13 @@ export class CharactersComponent implements OnInit {
     limit: null,
     total: null,
     count: null,
-    page: null,
+    page: 1,
     maxSize: 3,
   };
 
   public loading: boolean = false;
+
+  private getCharactersSub: Subscription;
 
   ngOnInit() {
     this.initPage();
@@ -54,17 +57,19 @@ export class CharactersComponent implements OnInit {
   }
 
   public displayResult(): string {
-    const totalChars = !this.pagination ? 0 : this.pagination.total;
-    return `Found ${totalChars} ` + (totalChars > 1 ? 'characters' : 'character');
+    const totalChars = this.pagination && this.pagination.total ? this.pagination.total : 0;
+    return `Found ${totalChars} ${totalChars > 1 ? 'characters' : 'character'}.`;
   }
 
   private searchCharacters(page: number = 1) {
     this.loading = true;
     this.option.offset = (page - 1) * this.pagination.limit;
-    this.marvelApiService.getCharacters(this.option).subscribe(
+    this.unsubscribe(this.getCharactersSub);
+    this.getCharactersSub = this.marvelApiService.getCharacters(this.option).subscribe(
       (data) => {
-        if (!Array.isArray(data.characters)) {
+        if (!data || !Array.isArray(data.characters)) {
           this.characters = [];
+          this.displayError();
           return;
         }
 
@@ -89,10 +94,19 @@ export class CharactersComponent implements OnInit {
         this.loading = false;
       },
       (error) => {
-        this.loading = false;
-        console.log(error);
-        Swal.fire({ icon: 'warning', text: 'Une erreur est survenue. Veuillez réessayer ultérieurement...' });
+        this.displayError(error);
       }
     );
+  }
+
+  private displayError(error?: any) {
+    this.loading = false;
+    Swal.fire({ icon: 'warning', text: 'Une erreur est survenue. Veuillez réessayer ultérieurement...' });
+  }
+
+  private unsubscribe(subscription: Subscription) {
+    if (subscription) {
+      subscription.unsubscribe();
+    }
   }
 }

@@ -24,7 +24,7 @@ export class MarvelApiService {
     }, {});
     return this.http.get(`${API_URL}/characters/list`, { params }).pipe(
       map((res: any) => {
-        return res.data || res.code;
+        return res.data;
       })
     );
   }
